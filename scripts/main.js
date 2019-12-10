@@ -48,9 +48,9 @@
             }
         },false)
 
-        document.body.addEventListener( 'touchstart', () => {
-                controls.lock()
-        })
+        // document.body.addEventListener( 'touchstart', () => {
+        //         controls.lock()
+        // })
 
         scene.add( controls.getObject() )
 
