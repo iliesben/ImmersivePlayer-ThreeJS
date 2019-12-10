@@ -45,11 +45,20 @@
         //         blocker.style.display = 'none'	
         //     }
         // },false)
-        document.body.addEventListener( 'click', (_e) => {
+
+        const touchstartMobile =  () => {
                 controls.lock()
                 blocker.style.display = 'none'	
-        },false)
+        }
+        const touchstarClick =  ()=> {
+                controls.lock()
+                blocker.style.display = 'none'	
+        }
+        document.addEventListener( 'touchstart', touchstartMobile )
+        document.addEventListener( 'click',touchstarClick)
+
         scene.add( controls.getObject() )
+
          
          /** Controls KeysDown*/
         const onKeyDown =  ( _event ) => {
