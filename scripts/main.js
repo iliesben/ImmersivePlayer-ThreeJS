@@ -38,28 +38,39 @@
          * Controls
          */
         controls = new THREE.PointerLockControls( camera, document.body )
-        // document.body.addEventListener( 'keydown', (_e) => {
-        //     if(_e.key === ' ')
-        //     {
-        //         controls.lock()
-        //         blocker.style.display = 'none'	
-        //     }
-        // },false)
+        let mobileToch = document.querySelector('.mobileToch')
+        let blocker = document.querySelector('#blocker')
 
-        const touchstartMobile =  () => {
+        
+        document.body.addEventListener( 'keydown', (_e) => {
+            if(_e.key === ' ')
+            {
                 controls.lock()
                 blocker.style.display = 'none'	
-        }
-        const touchstarClick =  ()=> {
+            }
+        },false)
+
+
+        document.body.addEventListener( 'touchstart' , ()=> {
                 controls.lock()
-                blocker.style.display = 'none'	
-        }
-        document.addEventListener( 'touchstart', touchstartMobile )
-        document.addEventListener( 'click',touchstarClick)
+                blocker.style.display = 'none'
+                mobileToch.style.display = 'none'
+        },false)
+
 
         scene.add( controls.getObject() )
 
-         
+        
+//          const touchstartMobile =  () => {
+//         controls.lock()
+//         blocker.style.display = 'none'	
+        // }
+        // const touchstarClick =  ()=> {
+        //         controls.lock()
+        //         blocker.style.display = 'none'	
+        // }
+        // document.addEventListener( 'touchstart', touchstartMobile )
+        // document.addEventListener( 'click',touchstarClick)
          /** Controls KeysDown*/
         const onKeyDown =  ( _event ) => {
             if (_event.code === 'KeyW')
