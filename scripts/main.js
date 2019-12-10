@@ -40,7 +40,7 @@
         controls = new THREE.PointerLockControls( camera, document.body )
         const mobileToch = document.querySelector('.mobileToch')
         const blocker = document.querySelector('#blocker')
-        const bodyl = document.querySelector('body')
+        // const bodyl = document.querySelector('body')
 
         
         document.body.addEventListener( 'keydown', (_e) => {
@@ -52,13 +52,12 @@
         },false)
 
 
-        bodyl.addEventListener( 'touchstart' , ()=> {
-            console.log("bibi");
+        document.body.addEventListener( 'touchend' , ()=> {
             
                 controls.lock()
                 blocker.style.display = 'none'
                 mobileToch.style.display = 'none'
-        },false)
+        })
 
 
         scene.add( controls.getObject() )
