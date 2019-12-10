@@ -38,10 +38,7 @@
          * Controls
          */
         controls = new THREE.PointerLockControls( camera, document.body )
-        const mobileToch = document.querySelector('.mobileToch')
         const blocker = document.querySelector('#blocker')
-        // const bodyl = document.querySelector('body')
-
         
         document.body.addEventListener( 'keydown', (_e) => {
             if(_e.key === ' ')
@@ -51,28 +48,8 @@
             }
         },false)
 
-
-        // document.body.addEventListener( 'touchstart' , ()=> {
-            
-        //         controls.lock()
-        //         blocker.style.display = 'none'
-        //         mobileToch.style.display = 'none'
-        // })
-
-
         scene.add( controls.getObject() )
 
-        
-//          const touchstartMobile =  () => {
-//         controls.lock()
-//         blocker.style.display = 'none'	
-        // }
-        // const touchstarClick =  ()=> {
-        //         controls.lock()
-        //         blocker.style.display = 'none'	
-        // }
-        // document.addEventListener( 'touchstart', touchstartMobile )
-        // document.addEventListener( 'click',touchstarClick)
          /** Controls KeysDown*/
 
         const onKeyDown =  ( _event ) => {
@@ -116,17 +93,43 @@
         document.addEventListener( 'keydown', onKeyDown )
         document.addEventListener( 'keyup', onKeyUp )
         
+         /** Controls Arrow*/
 
         const upArrow = document.querySelector('.upArrow')
-        
-        upArrow.addEventListener('touchstart', (e) => {
+        upArrow.addEventListener('touchstart', () => {
                 moveForward = true
-                console.log(e);
-                
         })
-        
+        upArrow.addEventListener('touchend',() => {
+            moveForward = false
+        })
 
-        /**
+        const downArrow = document.querySelector('.downArrow')
+        downArrow.addEventListener('touchstart', () => {
+            moveBackward= true
+        })
+        downArrow.addEventListener('touchend',() => {
+            moveBackward = false
+        })
+
+        const rightArrow = document.querySelector('.rightArrow')
+        rightArrow.addEventListener('touchstart', () => {
+            moveRight= true
+        })
+        rightArrow.addEventListener('touchend',() => {
+            moveRight = false
+        })
+
+        const leftArrow = document.querySelector('.leftArrow')
+        leftArrow.addEventListener('touchstart', () => {
+            moveLeft= true
+        })
+        leftArrow.addEventListener('touchend',() => {
+            moveLeft = false
+        })
+
+
+
+  /**
          * Raycaster
          */
         raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, -1, 0 ), 0, 10 )
