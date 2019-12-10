@@ -43,16 +43,16 @@
         // const bodyl = document.querySelector('body')
 
         
-        document.body.addEventListener( 'keydown', (_e) => {
-            if(_e.key === ' ')
-            {
-                controls.lock()
-                blocker.style.display = 'none'	
-            }
-        },false)
+        // document.body.addEventListener( 'keydown', (_e) => {
+        //     if(_e.key === ' ')
+        //     {
+        //         controls.lock()
+        //         blocker.style.display = 'none'	
+        //     }
+        // },false)
 
 
-        document.body.addEventListener( 'touchend' , ()=> {
+        document.body.addEventListener( 'touchstart' , ()=> {
             
                 controls.lock()
                 blocker.style.display = 'none'
