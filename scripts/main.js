@@ -48,6 +48,10 @@
             }
         },false)
 
+        document.body.addEventListener( 'touchstart', () => {
+                controls.lock()
+        })
+
         scene.add( controls.getObject() )
 
          /** Controls KeysDown*/
