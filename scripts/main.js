@@ -43,21 +43,21 @@
         // const bodyl = document.querySelector('body')
 
         
-        // document.body.addEventListener( 'keydown', (_e) => {
-        //     if(_e.key === ' ')
-        //     {
-        //         controls.lock()
-        //         blocker.style.display = 'none'	
-        //     }
-        // },false)
-
-
-        document.body.addEventListener( 'touchstart' , ()=> {
-            
+        document.body.addEventListener( 'keydown', (_e) => {
+            if(_e.key === ' ')
+            {
                 controls.lock()
-                blocker.style.display = 'none'
-                mobileToch.style.display = 'none'
-        })
+                blocker.style.display = 'none'	
+            }
+        },false)
+
+
+        // document.body.addEventListener( 'touchstart' , ()=> {
+            
+        //         controls.lock()
+        //         blocker.style.display = 'none'
+        //         mobileToch.style.display = 'none'
+        // })
 
 
         scene.add( controls.getObject() )
@@ -74,6 +74,7 @@
         // document.addEventListener( 'touchstart', touchstartMobile )
         // document.addEventListener( 'click',touchstarClick)
          /** Controls KeysDown*/
+
         const onKeyDown =  ( _event ) => {
             if (_event.code === 'KeyW')
             {
@@ -114,6 +115,16 @@
 
         document.addEventListener( 'keydown', onKeyDown )
         document.addEventListener( 'keyup', onKeyUp )
+        
+
+        const upArrow = document.querySelector('.upArrow')
+        
+        upArrow.addEventListener('touchstart', (e) => {
+                moveForward = true
+                console.log(e);
+                
+        })
+        
 
         /**
          * Raycaster
