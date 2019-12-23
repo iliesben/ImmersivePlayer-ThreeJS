@@ -505,9 +505,9 @@
 
         /**  Creation of the Artists*/
         const PNL = new SongRoom('PNL', 0, 49, -500, -Math.PI / 2, Math.PI, 0, 1, 0)
-        // const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
-        // const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
-        // const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
+        const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
+        const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
+        const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
 
         /**
          * Listener on window Resize
