@@ -8,9 +8,7 @@
     let velocity = new THREE.Vector3()
     let direction = new THREE.Vector3()
     let clock = new THREE.Clock();
-    let playerSpeed = 1000
-    let analyser1
-
+    let playerSpeed = 2000
     let playerCollisionDistance = 10;
 
     const init = () =>{
@@ -509,9 +507,9 @@
 
         /**  Creation of the Artists*/
         const PNL = new SongRoom('PNL', 0, 49, -500, -Math.PI / 2, Math.PI, 0, 1, 0)
-        // const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
-        // const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
-        // const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
+        const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
+        const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
+        const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
 
         /**
          * Listener on window Resize
@@ -541,9 +539,6 @@
 
         requestAnimationFrame( animate )
 
-        /**
-         *  Get the the preformance time to creat a velocity
-        */
        let delta = clock.getDelta();
 
         velocity.x -= velocity.x * 10.0 * delta
@@ -562,11 +557,14 @@
             velocity.x -= direction.x * playerSpeed * delta
         }
 
-        if (detectPlayerCollision() == false) {
-        controls.moveRight( - velocity.x * delta )
-        controls.moveForward( - velocity.z * delta )
-        controls.moveRight( - velocity.x * delta )
-        controls.moveForward( - velocity.z * delta )
+        if (detectPlayerCollision() === false) {
+            controls.moveRight( - velocity.x * delta )
+            controls.moveForward( - velocity.z * delta )
+        }
+        else
+        {
+            velocity.x = 0
+            velocity.z = 0
         }
         renderer.render( scene, camera )
     }
@@ -586,7 +584,7 @@
         // Flip matrix to that direction so that we can reposition the ray
         if (moveBackward) {
             rotationMatrix = new THREE.Matrix4();
-            rotationMatrix.makeRotationY(degreesToRadians(180));            
+            rotationMatrix.makeRotationY(degreesToRadians(180));
         }
         else if (moveLeft) {
             rotationMatrix = new THREE.Matrix4();
