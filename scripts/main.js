@@ -1,12 +1,9 @@
-    let camera, controls, scene, renderer, light, raycaster
+    let camera, controls, scene, renderer, light
     
     let moveForward = false
     let moveBackward = false
     let moveLeft = false
     let moveRight = false
-    let audioLoader = new THREE.AudioLoader()
-    let audioLoader2 = new THREE.AudioLoader()
-
     let prevTime = performance.now()
     let velocity = new THREE.Vector3()
     let direction = new THREE.Vector3()
@@ -33,6 +30,23 @@
         const light = new THREE.AmbientLight( 0xffffff )
         light.position.set( 0, 0, 1 ).normalize()
         scene.add(light)
+
+        const loadingManager = new THREE.LoadingManager( () => {
+	
+            const loadingScreen = document.getElementById( 'loading-screen' );
+
+            if( loadingScreen.classList.contains('fade-out') === false)
+            {
+                loadingScreen.classList.add( 'fade-out' );     
+            }
+            
+            // optional: remove loader from DOM via event listener
+            loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+        })
+
+        function onTransitionEnd( event ) {
+            event.target.style.display = 'none'
+        }
         
         /**
          * Controls
@@ -131,13 +145,6 @@
             moveLeft = false
         })
 
-
-
-  /**
-         * Raycaster
-         */
-        raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, -1, 0 ), 0, 10 )
-
         /**
          * Renderer
          */
@@ -155,7 +162,7 @@
          * Ground (floor)
         */
         const geometryGround = new THREE.PlaneGeometry( 1500, 1500, 10 )
-        const materialGround = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('assets/textures/ground.jpg') , side: THREE.DoubleSide} )
+        const materialGround = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader(loadingManager).load('assets/textures/ground.jpg') , side: THREE.DoubleSide} )
         materialGround.map.wrapS = THREE.RepeatWrapping
         materialGround.map.wrapT = THREE.RepeatWrapping
         materialGround.map.repeat.set(30,30)
@@ -174,7 +181,7 @@
                 this.z = z
                 this.rotationY = rotationY
                 this.geometryWall = new THREE.BoxBufferGeometry(this.width,100 ,2)
-                this.materialWall = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/paper3.jpg') } )
+                this.materialWall = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/paper3.jpg') } )
                 this.materialWall.map.wrapS = THREE.RepeatWrapping
                 this.materialWall.map.wrapT = THREE.RepeatWrapping
                 this.materialWall.map.repeat.set(10,5)
@@ -198,6 +205,9 @@
         /**
          * POO section to build the rooms
         */
+
+       let audioLoader = new THREE.AudioLoader(loadingManager)
+   
         class SongRoom{
             constructor(artiste, xWall, yWall, zWall, rotationWall, rotationBuffer, rotationButton, indiceZ, indiceX){
                 this.artiste = artiste
@@ -239,11 +249,11 @@
                 this.materialRoomTab =
                 [
                     new THREE.MeshPhongMaterial( { side: THREE.DoubleSide} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader().load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide, shininess : 5} ),
+                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide, shininess : 5} ),
                     new THREE.MeshPhongMaterial( {side: THREE.DoubleSide} ),
                     new THREE.MeshPhongMaterial( {side: THREE.DoubleSide} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader().load(`${this.songInfo.covers[3]}`) ,side: THREE.DoubleSide, shininess : 5} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader().load(`${this.songInfo.covers[4]}`) ,side: THREE.DoubleSide, shininess : 5} ), 
+                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[3]}`) ,side: THREE.DoubleSide, shininess : 5} ),
+                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[4]}`) ,side: THREE.DoubleSide, shininess : 5} ), 
                 ]
                 const materialRoom = new THREE.MeshFaceMaterial(this.materialRoomTab)
                 const room =  new THREE.Mesh( geometryRoom,materialRoom)
@@ -261,7 +271,7 @@
             nextSong()
             {
                 const geometryNext = new THREE.PlaneGeometry( 20, 20, 20 )
-                const matrialNext = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/buttons/next.png') ,side: THREE.DoubleSide, transparent: true} )
+                const matrialNext = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/buttons/next.png') ,side: THREE.DoubleSide, transparent: true} )
                 this.next =  new THREE.Mesh(geometryNext, matrialNext)
                 this.next.rotation.y = this.rotationButton
                 this.next.position.set(this.xWall +  ( 75  * this.indiceZ) + (124 * this.indiceX) ,  this.yWall  , this.zWall - (124 * this.indiceZ) + (75 * this.indiceX))
@@ -271,7 +281,7 @@
             previousSong()
             {
                 const geometryPrevious = new THREE.PlaneGeometry( 20, 20, 20 )
-                const matrialPrevious = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/buttons/previous.png') ,side: THREE.DoubleSide, transparent: true} )
+                const matrialPrevious = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/buttons/previous.png') ,side: THREE.DoubleSide, transparent: true} )
                 this.previous =  new THREE.Mesh(geometryPrevious, matrialPrevious)
                 this.previous.rotation.y = this.rotationButton
                 this.previous.position.set(this.xWall -  ( 75  * this.indiceZ) + (124 * this.indiceX) ,  this.yWall  , this.zWall - (124 * this.indiceZ) - (75 * this.indiceX))
@@ -285,7 +295,7 @@
                 'assets/textures/buttons/play.png'
                 ]
                 const geometryPlayPause = new THREE.PlaneGeometry( 20, 20, 20 )
-                const matrialPlayPause = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/buttons/play.png') ,side: THREE.DoubleSide, transparent: true} )
+                const matrialPlayPause = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/buttons/play.png') ,side: THREE.DoubleSide, transparent: true} )
                 this.playPause =  new THREE.Mesh(geometryPlayPause, matrialPlayPause)
                 this.playPause.rotation.y = this.rotationButton
                 this.playPause.position.set(this.xWall - ( -124 * this.indiceX ) ,  this.yWall  , this.zWall - (124  * this.indiceZ) )
@@ -295,7 +305,7 @@
             volumeUp()
             {
                 const geometryVolumeUp = new THREE.PlaneGeometry( 10, 10, 10 )
-                const matrialVolumeUp = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/buttons/volumeUp.png') ,side: THREE.DoubleSide, transparent: true} )
+                const matrialVolumeUp = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/buttons/volumeUp.png') ,side: THREE.DoubleSide, transparent: true} )
                 this.volumeUp =  new THREE.Mesh(geometryVolumeUp, matrialVolumeUp)
                 this.volumeUp.rotation.y = this.rotationButton
                 this.volumeUp.position.set(this.xWall +  ( 45  * this.indiceZ) + (124 * this.indiceX) ,  this.yWall - 25  , this.zWall - (124 * this.indiceZ) + (45 * this.indiceX))
@@ -309,7 +319,7 @@
                 'assets/textures/buttons/volumeStop.png'
                 ]
                 const geometryVolumeDown = new THREE.PlaneGeometry( 10, 10, 10 )
-                const matrialVolumeDown = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader().load('assets/textures/buttons/volumeDown.png') ,side: THREE.DoubleSide, transparent: true} )
+                const matrialVolumeDown = new THREE.MeshBasicMaterial( { map : new THREE.TextureLoader(loadingManager).load('assets/textures/buttons/volumeDown.png') ,side: THREE.DoubleSide, transparent: true} )
                 this.volumeDown =  new THREE.Mesh(geometryVolumeDown, matrialVolumeDown)
                 this.volumeDown.rotation.y = this.rotationButton
                 this.volumeDown.position.set(this.xWall -  ( 45  * this.indiceZ) + (124 * this.indiceX) ,  this.yWall - 25  , this.zWall - (124 * this.indiceZ) - (45 * this.indiceX))
@@ -370,8 +380,8 @@
                 /** Section of  click on next button listener*/
                 domEvents.addEventListener(this.next, 'click', _e =>
                 {
-                    if(this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[0]}`)){
-                        this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[1]}`) 
+                    if(this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[0]}`)){
+                        this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[1]}`) 
                     }
                     sound[this.number].stop()
                     this.number++
@@ -379,7 +389,7 @@
                         this.number = 0
                     }
 
-                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader().load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
+                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
 
                     if ( this.number % 3 === 0){
                         audioLoader.load(`${this.songInfo.songs[this.number]}`,
@@ -408,8 +418,8 @@
             /** Section of  click on previos button listener*/
             domEvents.addEventListener(this.previous, 'click', _e =>
                 {
-                    if(this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[0]}`)){
-                        this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[1]}`) 
+                    if(this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[0]}`)){
+                        this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[1]}`) 
                     }
                     sound[this.number].stop()
                     this.number--
@@ -421,7 +431,7 @@
                     if (this.number === 3) {
                         this.number = 0
                     }
-                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader().load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
+                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
 
                     if ( this.number % 3 === 0){
                         audioLoader.load(`${this.songInfo.songs[this.number]}`,
@@ -450,11 +460,11 @@
             domEvents.addEventListener(this.playPause, 'click', _e =>
                 {
                     if( sound[this.number].isPlaying === true){
-                        this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[0]}`) 
+                        this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[0]}`) 
                          sound[this.number].pause()
                     }
                     else if ( sound[this.number].isPlaying === false){
-                        this.playPause.material.map = new THREE.TextureLoader().load(`${this.pngPlayPause[1]}`) 
+                        this.playPause.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngPlayPause[1]}`) 
                          sound[this.number].play()
                     }
                 })
@@ -462,7 +472,7 @@
                 /** Section of  click on volume up button listener*/ 
                 domEvents.addEventListener(this.volumeUp, 'click', _e =>
                 {
-                    this.volumeDown.material.map = new THREE.TextureLoader().load(`${this.pngVolumeDown[0]}`) 
+                    this.volumeDown.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngVolumeDown[0]}`) 
                     songVolume++
                     if (songVolume > 50)
                     {
@@ -483,7 +493,7 @@
                     if (songVolume < 0)
                     {
                         songVolume = 0
-                        this.volumeDown.material.map = new THREE.TextureLoader().load(`${this.pngVolumeDown[1]}`) 
+                        this.volumeDown.material.map = new THREE.TextureLoader(loadingManager).load(`${this.pngVolumeDown[1]}`) 
                     }
                     for (let i = 0; i < sound.length; i++)
                     {
@@ -616,4 +626,3 @@
         window.addEventListener('DOMContentLoaded', () => {
                 init()
          })
-        
