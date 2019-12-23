@@ -7,8 +7,11 @@
     let prevTime = performance.now()
     let velocity = new THREE.Vector3()
     let direction = new THREE.Vector3()
-    let clock = new THREE.Clock()
+    let clock = new THREE.Clock();
+    let playerSpeed = 1000
     let analyser1
+
+    let playerCollisionDistance = 10;
 
     const init = () =>{
 
@@ -44,7 +47,7 @@
             loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
         })
 
-        function onTransitionEnd( event ) {
+        onTransitionEnd = ( event ) => {
             event.target.style.display = 'none'
         }
         
@@ -53,7 +56,8 @@
          */
         controls = new THREE.PointerLockControls( camera, document.body )
         const blocker = document.querySelector('#blocker')
-        
+        // console.log(controls);
+
         document.body.addEventListener( 'keydown', (_e) => {
             if(_e.key === ' ')
             {
@@ -66,7 +70,7 @@
         //         controls.lock()
         // })
 
-        scene.add( controls.getObject() )
+        // scene.add( controls.getObject() )
 
          /** Controls KeysDown*/
 
@@ -505,9 +509,9 @@
 
         /**  Creation of the Artists*/
         const PNL = new SongRoom('PNL', 0, 49, -500, -Math.PI / 2, Math.PI, 0, 1, 0)
-        const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
-        const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
-        const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
+        // const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
+        // const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
+        // const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
 
         /**
          * Listener on window Resize
@@ -540,89 +544,86 @@
         /**
          *  Get the the preformance time to creat a velocity
         */
-        const time = performance.now()
-        const delta = ( time - prevTime ) / 1000
+       let delta = clock.getDelta();
 
         velocity.x -= velocity.x * 10.0 * delta
         velocity.z -= velocity.z * 10.0 * delta
         
-        /**
-         *   Creat a variable to have the axe of direction  exp : if direction x === -1 the locker go left 
-        */
         direction.z = Number( moveForward ) - Number( moveBackward )
         direction.x = Number( moveRight ) - Number( moveLeft )
         direction.normalize()
 
-        /**
-         *   Applicate the velocity for direction
-        */
         if ( moveForward || moveBackward )
         {
-            velocity.z -= direction.z * 1000.0 * delta
+            velocity.z -= direction.z * playerSpeed * delta
         }
         if ( moveLeft || moveRight ) 
         {
-            velocity.x -= direction.x * 1000.0 * delta
+            velocity.x -= direction.x * playerSpeed * delta
         }
 
-        /**
-         *   Get the controls position and the mouse is picking whit Vector3 
-        */
-        let originPoint = controls.getObject().position
-        let mouse3D = new THREE.Vector3()
-        mouse3D.normalize()
-        controls.getDirection( mouse3D )
-
-        /**
-         *   the origin of the ray in Vector and the direction of the vector
-        */
-        let ray = new THREE.Raycaster( originPoint, controls.getDirection(mouse3D))
-          
-        /**
-         *   all of this to create collsion between the locker (player) and the scene children ( geaometry add to the scene)
-        */
-        let collisionResults = ray.intersectObjects(scene.children)
-        
-        /**
-         *   the codition of colision
-        */
-    
-    
-        if ( collisionResults.length > 0 && collisionResults[0].distance < controls.getObject().position.y) {
-                if (moveForward === true && direction.z === 1 ) {
-                moveForward = false
-                velocity.z =  Math.max( 150)
-            }
-            if (moveBackward === true && direction.z === -1 ) {
-                moveBackward = false
-                velocity.z =  Math.min( -150 )
-            }
-             if( moveRight === true && direction.x === 1 )
-                {
-                    moveRight = false
-                    velocity.x =  Math.min(150 )
-                }
-             if( moveLeft === true && direction.x === -1)
-            {
-                moveLeft = false
-                velocity.x =  Math.max(-150 )
-            }
-
-        }
-
-        /**
-         *  Aplicate the controls and velocity together
-        */
+        if (detectPlayerCollision() == false) {
         controls.moveRight( - velocity.x * delta )
         controls.moveForward( - velocity.z * delta )
         controls.moveRight( - velocity.x * delta )
         controls.moveForward( - velocity.z * delta )
-
-        prevTime = time
-
+        }
         renderer.render( scene, camera )
     }
 
         window.addEventListener('DOMContentLoaded', () => {
                 init()
          })
+         
+        detectPlayerCollision = () => {
+        // The rotation matrix to apply to our direction vector
+        // Undefined by default to indicate ray should coming from front
+        var rotationMatrix;
+        // Get direction of camera
+        var cameraDirection = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone()
+    
+        // Check which direction we're moving (not looking)
+        // Flip matrix to that direction so that we can reposition the ray
+        if (moveBackward) {
+            rotationMatrix = new THREE.Matrix4();
+            rotationMatrix.makeRotationY(degreesToRadians(180));            
+        }
+        else if (moveLeft) {
+            rotationMatrix = new THREE.Matrix4();
+            rotationMatrix.makeRotationY(degreesToRadians(90));
+        }
+        else if (moveRight) {
+            rotationMatrix = new THREE.Matrix4();
+            rotationMatrix.makeRotationY(degreesToRadians(270));
+        }
+    
+        // Player is not moving forward, apply rotation matrix needed
+        if (rotationMatrix !== undefined) {
+            cameraDirection.applyMatrix4(rotationMatrix);
+        }
+    
+        // Apply ray to player camera
+        var rayCaster = new THREE.Raycaster(controls.getObject().position, cameraDirection);
+    
+        // If our ray hit a collidable object, return true
+        if (rayIntersect(rayCaster, playerCollisionDistance)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    rayIntersect = (ray, distance) => {
+        let intersects = ray.intersectObjects(scene.children)
+        for (var i = 0; i < intersects.length; i++) {
+            if (intersects[i].distance < distance) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+// Converts degrees to radians
+    degreesToRadians = (degrees) =>{
+        return degrees * Math.PI / 180;
+  }
