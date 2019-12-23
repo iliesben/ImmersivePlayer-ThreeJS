@@ -227,11 +227,11 @@
                     `assets/songs/${this.artiste}2.mp3`,
                     ],
                     covers : [
-                    `assets/textures/covers/${this.artiste}0.jpg`,
-                    `assets/textures/covers/${this.artiste}1.jpg`,
-                    `assets/textures/covers/${this.artiste}2.jpg`,
-                    `assets/textures/covers/${this.artiste}3.jpg`,
-                    `assets/textures/covers/${this.artiste}4.jpg`,
+                    new THREE.TextureLoader(loadingManager).load(`assets/textures/covers/${this.artiste}0.jpg`),
+                    new THREE.TextureLoader(loadingManager).load(`assets/textures/covers/${this.artiste}1.jpg`),
+                    new THREE.TextureLoader(loadingManager).load(`assets/textures/covers/${this.artiste}2.jpg`),
+                    new THREE.TextureLoader(loadingManager).load(`assets/textures/covers/${this.artiste}3.jpg`),
+                    new THREE.TextureLoader(loadingManager).load(`assets/textures/covers/${this.artiste}4.jpg`)
                     ]
                 }
                 this.creationRoom()
@@ -249,11 +249,11 @@
                 this.materialRoomTab =
                 [
                     new THREE.MeshPhongMaterial( { side: THREE.DoubleSide} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide, shininess : 5} ),
+                    new THREE.MeshPhongMaterial( { map : this.songInfo.covers[this.number] ,side: THREE.DoubleSide, shininess : 5} ),
                     new THREE.MeshPhongMaterial( {side: THREE.DoubleSide} ),
                     new THREE.MeshPhongMaterial( {side: THREE.DoubleSide} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[3]}`) ,side: THREE.DoubleSide, shininess : 5} ),
-                    new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[4]}`) ,side: THREE.DoubleSide, shininess : 5} ), 
+                    new THREE.MeshPhongMaterial( { map : this.songInfo.covers[3] ,side: THREE.DoubleSide, shininess : 5} ),
+                    new THREE.MeshPhongMaterial( { map : this.songInfo.covers[4] ,side: THREE.DoubleSide, shininess : 5} ), 
                 ]
                 const materialRoom = new THREE.MeshFaceMaterial(this.materialRoomTab)
                 const room =  new THREE.Mesh( geometryRoom,materialRoom)
@@ -389,7 +389,7 @@
                         this.number = 0
                     }
 
-                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
+                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : this.songInfo.covers[this.number] ,side: THREE.DoubleSide} )
 
                     if ( this.number % 3 === 0){
                         audioLoader.load(`${this.songInfo.songs[this.number]}`,
@@ -431,7 +431,7 @@
                     if (this.number === 3) {
                         this.number = 0
                     }
-                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : new THREE.TextureLoader(loadingManager).load(`${this.songInfo.covers[this.number]}`) ,side: THREE.DoubleSide} )
+                    this.materialRoomTab[1] = new THREE.MeshPhongMaterial( { map : this.songInfo.covers[this.number] ,side: THREE.DoubleSide} )
 
                     if ( this.number % 3 === 0){
                         audioLoader.load(`${this.songInfo.songs[this.number]}`,
@@ -505,9 +505,9 @@
 
         /**  Creation of the Artists*/
         const PNL = new SongRoom('PNL', 0, 49, -500, -Math.PI / 2, Math.PI, 0, 1, 0)
-        const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
-        const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
-        const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
+        // const TUPAC = new SongRoom('TUPAC', 0, 49, 500, Math.PI / 2, Math.PI * 2, Math.PI, -1, 0)
+        // const SHAKIRA = new SongRoom('SHAKIRA', 375, 49, 0, -Math.PI, Math.PI / 2, - Math.PI / 2, 0, 1)
+        // const RIHANNA = new SongRoom('RIHANNA', -375, 49, 0, 0, Math.PI / -2, Math.PI / 2, 0, -1)
 
         /**
          * Listener on window Resize
